@@ -257,8 +257,8 @@ public class PlayerListener extends ModifyworldListener {
 						break;
 					}
 				case EGG:
-				case SNOW_BALL:
-				case EXP_BOTTLE:
+				case SNOWBALL:
+				case EXPERIENCE_BOTTLE:
 					if (permissionDenied(player, "modifyworld.items.throw", player.getItemInHand())) {
 						event.setUseItemInHand(Result.DENY);
 						//Denying a potion works fine, but the client needs to be updated because it already reduced the item.
