@@ -43,7 +43,7 @@ public class EntityListener extends ModifyworldListener {
 			EntityDamageByEntityEvent edbe = (EntityDamageByEntityEvent) event;
 
 			Player player;
-			if (edbe.getDamager() instanceof Player) { // Prevent from damaging by player
+			if (edbe.getDamager() instanceof Player) { // Предотвратить повреждение игроком
 				player = (Player) edbe.getDamager();
 				if (permissionDenied(player, "modifyworld.damage.deal", event.getEntity())) {
 					cancelDamageEvent(player, event);
@@ -52,14 +52,14 @@ public class EntityListener extends ModifyworldListener {
 
 			if (edbe.getEntity() instanceof Player) {
 				player = (Player) edbe.getEntity();
-				if (edbe.getDamager() != null && player.isOnline()) { // Prevent from taking damage by entity
+				if (edbe.getDamager() != null && player.isOnline()) { // Предотвратить получение урона от сущности
 					if (_permissionDenied(player, "modifyworld.damage.take", edbe.getDamager())) {
 						cancelDamageEvent(player, event);
 					}
 				}
 			}
 
-		} else if (event.getEntity() instanceof Player) { // player are been damaged by enviroment
+		} else if (event.getEntity() instanceof Player) { // игрок был поврежден окружающей средой
 			Player player = (Player) event.getEntity();
 
 			if (_permissionDenied(player, "modifyworld.damage.take",  event.getCause().name().toLowerCase().replace("_", ""))) {
