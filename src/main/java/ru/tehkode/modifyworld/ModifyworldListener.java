@@ -79,7 +79,7 @@ public abstract class ModifyworldListener implements Listener {
 		EntityCategory category = EntityCategory.fromEntity(entity);
 
 		if (category == null) {
-			return entityName; // category unknown (ender crystal)
+			return entityName; // category unknown (ender crystal) // категория неизвестна (ender crystal)
 		}
 
 		return category.getNameDot() + entityName;
@@ -89,7 +89,7 @@ public abstract class ModifyworldListener implements Listener {
 		return formatEnumString(type.name());
 	}
 
-	// Functional programming fuck yeah
+	// Functional programming fuck yeah // Функциональное программирование, блин, да
 	private String getMaterialPermission(Material type) {
 		return this.useMaterialNames ? formatEnumString(type.name()) : Integer.toString(type.getId());
 	}
