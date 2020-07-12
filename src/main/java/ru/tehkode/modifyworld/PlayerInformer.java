@@ -18,12 +18,12 @@ import java.util.Map;
 
 public class PlayerInformer {
 
-	public final static String PERMISSION_DENIED = "Sorry, you don't have enough permissions";
-	public final static String DEFAULT_MESSAGE_FORMAT = "&f[&2Modifyworld&f]&4 %s";
-	// Default message format
+	public final static String PERMISSION_DENIED = "Извините, у вас недостаточно прав";
+	public final static String DEFAULT_MESSAGE_FORMAT = "&f[&2ModifyworldR&f]&4 %s";
+	// Формат сообщения по умолчанию
 	protected String messageFormat = DEFAULT_MESSAGE_FORMAT;
 	protected Map<String, String> messages = new HashMap<String, String>();
-	// Flags
+	// Флаги
 	protected boolean enabled = false;
 	protected boolean individualMessages = false;
 	protected String defaultMessage = PERMISSION_DENIED;
@@ -167,17 +167,17 @@ public class PlayerInformer {
 	}
 
 	protected String describeObject(Object obj) {
-		if (obj instanceof ComplexEntityPart) { // Complex entities
+		if (obj instanceof ComplexEntityPart) { // Сложные объекты
 			return describeObject(((ComplexEntityPart) obj).getParent());
-		} else if (obj instanceof Item) { // Dropped items
+		} else if (obj instanceof Item) { // Выпавшие предметы
 			return describeMaterial(((Item) obj).getItemStack().getType());
-		} else if (obj instanceof ItemStack) { // Items
+		} else if (obj instanceof ItemStack) { // Предметы
 			return describeMaterial(((ItemStack) obj).getType());
-		} else if (obj instanceof Entity) { // Entities
+		} else if (obj instanceof Entity) { // Сущности
 			return ((Entity) obj).getType().toString().toLowerCase().replace("_", " ");
-		} else if (obj instanceof Block) { // Blocks
+		} else if (obj instanceof Block) { // Блоки
 			return describeMaterial(((Block) obj).getType());
-		} else if (obj instanceof Material) { // Just material
+		} else if (obj instanceof Material) { // Просто материал
 			return describeMaterial((Material) obj);
 		}
 
@@ -186,6 +186,7 @@ public class PlayerInformer {
 
 	private String describeMaterial(Material material) {
 		// TODO: implement data id
+		// TODO: реализовать идентификатор данных
 
 		if (material == Material.INK_SACK) {
 			return "dye";
@@ -195,8 +196,9 @@ public class PlayerInformer {
 	}
 
 	// For backward compatibility
+	// Для обратной совместимости
 	private void importMessages(ConfigurationSection config) {
-		// This should NOT be refactored, because it would be stupid :D
+		// Это НЕ должно быть реорганизовано, потому что это было бы глупо: D
 		if (config.isString("whitelistMessage")) {
 			setMessage("modifyworld.login", config.getString("whitelistMessage"));
 			config.set("whitelistMessage", null);
