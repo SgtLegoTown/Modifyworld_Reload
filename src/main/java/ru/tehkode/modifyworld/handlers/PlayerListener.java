@@ -114,7 +114,7 @@ public class PlayerListener extends ModifyworldListener {
 	public void onPlayerBucketFill(PlayerBucketFillEvent event) {
 		String materialName = event.getBlockClicked().getType().toString().toLowerCase().replace("stationary_", ""); // STATIONARY_WATER -> water
 
-		if ("air".equals(materialName)) { // This should be milk
+		if ("air".equals(materialName)) { // Это должно быть молоко
 			materialName = "milk";
 		}
 
@@ -139,7 +139,7 @@ public class PlayerListener extends ModifyworldListener {
 
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-		// No inform to avoid spam
+		// Не сообщать, чтобы избежать спама
 		if (_permissionDenied(event.getPlayer(), "modifyworld.items.pickup", event.getItem().getItemStack())) {
 			event.setCancelled(true);
 		}
@@ -181,10 +181,10 @@ public class PlayerListener extends ModifyworldListener {
 	public void onPlayerInventoryClick(InventoryClickEvent event) {
 		InventoryHolder holder = event.getInventory().getHolder();
 
-		if (holder instanceof Player || // do not track inter-inventory stuff
-				event.getRawSlot() >= event.getView().getTopInventory().getSize() || // top inventory only
-				event.getSlotType() == InventoryType.SlotType.OUTSIDE ||  // do not track drop
-				event.getSlot() == -999) { // temporary fix for bukkit bug (BUKKIT-2768)
+		if (holder instanceof Player || // не отслеживать вещи из инвентаря стафа
+				event.getRawSlot() >= event.getView().getTopInventory().getSize() || // только топ инвентарь
+				event.getSlotType() == InventoryType.SlotType.OUTSIDE ||  // не отслеживать дроп
+				event.getSlot() == -999) { // временное исправление ошибки Bukkit (BUKKIT-2768)
 			return;
 		}
 
@@ -244,15 +244,15 @@ public class PlayerListener extends ModifyworldListener {
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Action action = event.getAction();
 
-		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) { // item restriction check
+		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) { // проверка ограничения товара
 			this.checkPlayerInventory(event.getPlayer());
 		}
 
 		Player player = event.getPlayer();
 
-		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) { //RIGHT_CLICK_AIR is cancelled by default.
+		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) { //RIGHT_CLICK_AIR по умолчанию отменен.
 			switch (player.getItemInHand().getType()) {
-				case POTION: //Only check splash potions.
+				case POTION: //Только проверяйте зелье всплеска.
 					if ((player.getItemInHand().getDurability() & 0x4000) != 0x4000) {
 						break;
 					}
@@ -261,17 +261,17 @@ public class PlayerListener extends ModifyworldListener {
 				case EXP_BOTTLE:
 					if (permissionDenied(player, "modifyworld.items.throw", player.getItemInHand())) {
 						event.setUseItemInHand(Result.DENY);
-						//Denying a potion works fine, but the client needs to be updated because it already reduced the item.
+						//Отказ от зелья работает нормально, но клиент должен быть обновлен, потому что он уже уменьшил предмет.
 						if (player.getItemInHand().getType() == Material.POTION) {
 							event.getPlayer().updateInventory();
 						}
 					}
-					return; // no need to check further
-				case MONSTER_EGG: // don't add MONSTER_EGGS here
+					return; // нет необходимости проверять дальше
+				case MONSTER_EGG: // не добавляйте здесь MONSTER_EGGS
 					if (permissionDenied(player, "modifyworld.spawn", ((SpawnEgg)player.getItemInHand().getData()).getSpawnedType())) {
 						event.setUseItemInHand(Result.DENY);
 					}
-					return; // no need to check further
+					return; // нет необходимости проверять дальше
 			}
 		}
 
