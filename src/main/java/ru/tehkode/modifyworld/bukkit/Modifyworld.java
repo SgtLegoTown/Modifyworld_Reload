@@ -68,14 +68,14 @@ public class Modifyworld extends JavaPlugin {
 		this.config = this.getConfig();
 
 		if (!config.isConfigurationSection("messages")) {
-			this.getLogger().severe("Deploying default config");
+			this.getLogger().severe("Развертывание конфигурации по умолчанию");
 			this.initializeConfiguration(config);
 		}
 
 		this.informer = new PlayerInformer(config);
 
 		this.registerListeners();
-		this.getLogger().info("Modifyworld enabled!");
+		this.getLogger().info("Modifyworld включен!");
 
 		this.saveConfig();
 	}
@@ -85,11 +85,11 @@ public class Modifyworld extends JavaPlugin {
 		this.listeners.clear();
 		this.config = null;
 
-		this.getLogger().info("Modifyworld successfully disabled!");
+		this.getLogger().info("Modifyworld успешно отключен!");
 	}
 
 	protected void initializeConfiguration(FileConfiguration config) {
-		// Flags
+		// Флаги
 		config.set("item-restrictions", false);
 		config.set("inform-players", true);
 		config.set("whitelist", false);
@@ -118,11 +118,11 @@ public class Modifyworld extends JavaPlugin {
 
     public InputStream getLocalizedResource(String path, Locale locale) {
         InputStream ret;
-        ret = getResource("lang/" + locale.toString() + "/" + path); // Country-specific
-        if (ret == null && !locale.getCountry().isEmpty()) { // Available without country-specific variant
+        ret = getResource("lang/" + locale.toString() + "/" + path); // Локализация
+        if (ret == null && !locale.getCountry().isEmpty()) { // Доступно без варианта для конкретной страны
             ret = getResource("lang/" + locale.getLanguage() + "/" + path);
         }
-        if (ret == null) { // Unlocalized
+        if (ret == null) { // нелокализованно
             ret = getResource(path);
         }
         return ret;
@@ -193,7 +193,7 @@ public class Modifyworld extends JavaPlugin {
 		try {
 			this.config.save(configFile);
 		} catch (IOException e) {
-			this.getLogger().severe("Failed to save configuration file: " + e.getMessage());
+			this.getLogger().severe("Не удалось сохранить файл конфигурации: " + e.getMessage());
 		}
 	}
 
@@ -205,17 +205,17 @@ public class Modifyworld extends JavaPlugin {
 		try {
 			config.load(configFile);
 		} catch (FileNotFoundException e) {
-			this.getLogger().severe("Configuration file not found - deploying default one");
+			this.getLogger().severe("Файл конфигурации не найден - развертывание по умолчанию");
 			InputStream defConfigStream = getLocalizedResource("config.yml");
 			if (defConfigStream != null) {
 				try {
 					this.config.load(new InputStreamReader(defConfigStream));
 				} catch (Exception de) {
-					this.getLogger().severe("Default config file is broken. Please tell this to Modifyworld author.");
+					this.getLogger().severe("Конфигурационный файл по умолчанию не работает. Пожалуйста, сообщите об этом автору Modifyworld..");
 				}
 			}
 		} catch (Exception e) {
-			this.getLogger().severe("Failed to load configuration file: " + e.getMessage());
+			this.getLogger().severe("Не удалось загрузить файл конфигурации: " + e.getMessage());
 		}
 
 		InputStream defConfigStream = getLocalizedResource("config.yml");
