@@ -91,19 +91,15 @@ public abstract class ModifyworldListener implements Listener {
 
 	// Functional programming fuck yeah // Функциональное программирование, блин, да
 	private String getMaterialPermission(Material type) {
-		return this.useMaterialNames ? formatEnumString(type.name()) : Integer.toString(type.getId());
-	}
-
-	private String getMaterialPermission(Material type, byte metadata) {
-		return getMaterialPermission(type) + (checkMetadata && metadata > 0 ? ":" + metadata : "");
+		return formatEnumString(type.name());
 	}
 
 	private String getBlockPermission(Block block) {
-		return getMaterialPermission(block.getType(), block.getData());
+		return getMaterialPermission(block.getType());
 	}
 
 	public String getItemPermission(ItemStack item) {
-		return getMaterialPermission(item.getType(), item.getData().getData());
+		return getMaterialPermission(item.getType());
 	}
 
 	/*
