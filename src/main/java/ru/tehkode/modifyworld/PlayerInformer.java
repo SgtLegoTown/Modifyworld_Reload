@@ -3,6 +3,7 @@ package ru.tehkode.modifyworld;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ComplexEntityPart;
@@ -129,12 +130,13 @@ public class PlayerInformer {
 		if (chat != null) {
 			String message;
 			String perm = permission;
+			OfflinePlayer pl = Bukkit.getOfflinePlayer(player.getUniqueId());
 			int index;
 
 			while ((index = perm.lastIndexOf(".")) != -1) {
 				perm = perm.substring(0, index);
 
-				message = chat.getPlayerInfoString(player.getWorld(), player.getName(), "permission-denied-" + perm, null);
+				message = chat.getPlayerInfoString(player.getWorld().getName(), pl, "permission-denied-" + perm, null);
 				if (message == null) {
 					continue;
 				}
@@ -142,7 +144,7 @@ public class PlayerInformer {
 				return message;
 			}
 
-			message = chat.getPlayerInfoString(player.getWorld(), player.getName(), "permission-denied", null);
+			message = chat.getPlayerInfoString(player.getWorld().getName(), pl, "permission-denied", null);
 			if (message != null) {
 				return message;
 			}
