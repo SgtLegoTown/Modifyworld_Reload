@@ -40,6 +40,7 @@ import ru.tehkode.modifyworld.PlayerInformer;
 
 /**
  * @author t3hk0d3
+ * @change metallnt
  */
 public class PlayerListener extends ModifyworldListener {
 	Logger log = Logger.getLogger("Modifyworld");
@@ -55,7 +56,6 @@ public class PlayerListener extends ModifyworldListener {
 
 	}
 
-	// иметь <itemid>в своих руках
 	@EventHandler(priority = EventPriority.LOW)
 	public void onItemHeldChange(PlayerItemHeldEvent event) {
 		log.info("PlayerListener.1");
@@ -82,7 +82,6 @@ public class PlayerListener extends ModifyworldListener {
 		this.checkPlayerInventory(player);
 	}
 
-	// Что-то там с перемещением из инвентаря в руку
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerInventoryEvent(InventoryClickEvent event) {
 		log.info("PlayerListener.6");
@@ -103,7 +102,6 @@ public class PlayerListener extends ModifyworldListener {
 		}
 	}
 
-	// использование предмета ПКМ на сущности (почему "on.entity"???)
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		log.info("PlayerListener.9");
@@ -119,20 +117,18 @@ public class PlayerListener extends ModifyworldListener {
 		}
 		log.info("PlayerListener.13");
 
-		// Проверка на использование
 		if (!event.isCancelled() && permissionDenied(event.getPlayer(), "modifyworld.interact", event.getRightClicked())) {
 			log.info("PlayerListener.14");
 			event.setCancelled(true);
 		}
 	}
 
-	// использование
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		log.info("PlayerListener.15");
 		Action action = event.getAction();
 
-		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) { // Если ПКМ по воздуху или по блоку, то проверяем инвентарь (хз зачем)
+		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) { 
 			log.info("PlayerListener.16");
 			this.checkPlayerInventory(event.getPlayer());
 		}
@@ -140,7 +136,7 @@ public class PlayerListener extends ModifyworldListener {
 
 		Player player = event.getPlayer();
 
-		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) { //RIGHT_CLICK_AIR по умолчанию отменен.
+		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) { 
 			log.info("PlayerListener.18");
 			switch (player.getInventory().getItemInMainHand().getType()) {
 				case POTION: //Только проверяйте зелье всплеска.
@@ -155,35 +151,32 @@ public class PlayerListener extends ModifyworldListener {
 					if (permissionDenied(player, "modifyworld.items.throw", player.getInventory().getItemInMainHand())) {
 						log.info("PlayerListener.21");
 						event.setUseItemInHand(Result.DENY);
-						//Отказ от зелья работает нормально, но клиент должен быть обновлен, потому что он уже уменьшил предмет.
 						if (player.getInventory().getItemInMainHand().getType() == Material.POTION) {
 							log.info("PlayerListener.22");
-//							event.getPlayer().updateInventory();
 						}
 					}
 					log.info("PlayerListener.23");
-					return; // нет необходимости проверять дальше
-				case MONSTER_EGG: // не добавляйте здесь MONSTER_EGGS
+					return; 
+				case MONSTER_EGG: 
 					log.info("PlayerListener.24");
 					if (permissionDenied(player, "modifyworld.spawn", ((org.bukkit.inventory.meta.SpawnEggMeta)player.getInventory().getItemInMainHand().getData()).getSpawnedType())) {
 						log.info("PlayerListener.25");
 						event.setUseItemInHand(Result.DENY);
 					}
 					log.info("PlayerListener.26");
-					return; // нет необходимости проверять дальше
+					return; 
 			default:
 				log.info("PlayerListener.27");
 				break;
 			}
 		}
 
-		// Если не ЛКМ, не ПКМ и не нажатие весом
 		if (action != Action.LEFT_CLICK_BLOCK && action != Action.RIGHT_CLICK_BLOCK && action != Action.PHYSICAL) {
 			log.info("PlayerListener.28");
 			return;
 		}
 
-		// Изменяю PHYSICAL на LEFT_CLICK_BLOCK и изменяю правило (use => left)
+		// Change PHYSICAL on LEFT_CLICK_BLOCK and permissions (use => left)
 		if (this.checkItemUse && action == Action.LEFT_CLICK_BLOCK) {
 			log.info("PlayerListener.29");
 			if (permissionDenied(event.getPlayer(), "modifyworld.items.left", player.getInventory().getItemInMainHand(), "on.block", event.getClickedBlock())) {
@@ -195,7 +188,7 @@ public class PlayerListener extends ModifyworldListener {
 			return;
 		}
 		
-		// Добавляю то же действие на RIGHT_CLICK_BLOCK и изменяю правило (use => right)
+		// Add RIGHT_CLICK_BLOCK and permissions (use => right)
 		if (this.checkItemUse && action == Action.RIGHT_CLICK_BLOCK) {
 			log.info("PlayerListener.32");
 			if (permissionDenied(event.getPlayer(), "modifyworld.items.right", player.getInventory().getItemInMainHand(), "on.block", event.getClickedBlock())) {
@@ -207,14 +200,12 @@ public class PlayerListener extends ModifyworldListener {
 			return;
 		}
 
-		// Проверяю на использование
 		if (!event.isCancelled() && permissionDenied(player, "modifyworld.blocks.interact", event.getClickedBlock())) {
 			log.info("PlayerListener.35");
 			event.setCancelled(true);
 		}
 	}
 
-	// зачаровать <itemid>.
 	@EventHandler(priority = EventPriority.LOW)
 	public void onItemEnchant(EnchantItemEvent event) {
 		log.info("PlayerListener.36");
@@ -224,7 +215,6 @@ public class PlayerListener extends ModifyworldListener {
 		}
 	}
 
-	// Крафт
 	@EventHandler(priority = EventPriority.LOW)
 	public void onItemCraft(CraftItemEvent event) {
 		log.info("PlayerListener.38");
@@ -236,7 +226,6 @@ public class PlayerListener extends ModifyworldListener {
 		}
 	}
 
-	// Проверка разрешений иметь в инвентаре
 	protected void checkPlayerInventory(Player player) {
 		log.info("PlayerListener.40");
 		if (!checkInventory) {
