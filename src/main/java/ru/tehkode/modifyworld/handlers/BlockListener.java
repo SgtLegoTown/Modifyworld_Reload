@@ -41,6 +41,7 @@ public class BlockListener extends ModifyworldListener {
 		super(plugin, config, informer);
 	}
 
+	// Если нет прав на ломание блока, то отмена
 	@EventHandler(priority = EventPriority.LOW)
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (permissionDenied(event.getPlayer(), "modifyworld.blocks.destroy", event.getBlock())) {
@@ -48,6 +49,7 @@ public class BlockListener extends ModifyworldListener {
 		}
 	}
 
+	// Если нет прав на установку блока, то отмена
 	@EventHandler(priority = EventPriority.LOW)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if (permissionDenied(event.getPlayer(), "modifyworld.blocks.place", event.getBlock())) {
@@ -55,6 +57,7 @@ public class BlockListener extends ModifyworldListener {
 		}
 	}
 
+	// Если нет прав на ломание объекта, то отмена
 	@EventHandler(priority = EventPriority.LOW)
 	public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
 		if (event.getRemover() instanceof Player
@@ -63,6 +66,7 @@ public class BlockListener extends ModifyworldListener {
 		}
 	}
 
+	// Если нет прав на установку объекта, то отмена
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPaintingPlace(HangingPlaceEvent event) {
 		if (permissionDenied(event.getPlayer(), "modifyworld.blocks.place", event.getEntity().getType())) {
