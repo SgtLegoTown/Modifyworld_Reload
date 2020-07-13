@@ -59,103 +59,7 @@ public class PlayerListener extends ModifyworldListener {
 
 	}
 
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerSneak(PlayerToggleSneakEvent event) {
-		Player player = event.getPlayer();
-
-		if (event.isSneaking() && _permissionDenied(player, "modifyworld.sneak")) {
-			event.setCancelled(true);
-			event.getPlayer().setSneaking(false);
-		}
-	}
-
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerSprint(PlayerToggleSprintEvent event) {
-		Player player = event.getPlayer();
-
-		if (event.isSprinting() && _permissionDenied(player, "modifyworld.sprint")) {
-			event.setCancelled(true);
-			event.getPlayer().setSprinting(false);
-		}
-	}
-
-
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerLogin(PlayerLoginEvent event) {
-		if (!enableWhitelist) {
-			return;
-		}
-
-		Player player = event.getPlayer();
-
-		if (_permissionDenied(player, "modifyworld.login")) {
-			// String whiteListMessage = user.getOption("kick-message", worldName, this.whitelistKickMessage);
-			event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, informer.getMessage(player, "modifyworld.login"));
-			Logger.getLogger("Minecraft").info("Player \"" + player.getName() + "\" were kicked by Modifyworld - lack of 'modifyworld.login' permission");
-		}
-	}
-
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerBedEnter(PlayerBedEnterEvent event) {
-		if (permissionDenied(event.getPlayer(), "modifyworld.usebeds")) {
-			event.setCancelled(true);
-		}
-	}
-
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-		String bucketName = event.getBucket().toString().toLowerCase().replace("_bucket", ""); // WATER_BUCKET -> water
-		if (permissionDenied(event.getPlayer(), "modifyworld.bucket.empty", bucketName)) {
-			event.setCancelled(true);
-		}
-	}
-
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerBucketFill(PlayerBucketFillEvent event) {
-		String materialName = event.getBlockClicked().getType().toString().toLowerCase().replace("stationary_", ""); // STATIONARY_WATER -> water
-
-		if ("air".equals(materialName)) { // Это должно быть молоко
-			materialName = "milk";
-		}
-
-		if (permissionDenied(event.getPlayer(), "modifyworld.bucket.fill", materialName)) {
-			event.setCancelled(true);
-		}
-	}
-
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-		if (event.getMessage().startsWith("/tell") && permissionDenied(event.getPlayer(), "modifyworld.chat.private")) {
-			event.setCancelled(true);
-		}
-	}
-
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerChat(PlayerChatEvent event) {
-		if (permissionDenied(event.getPlayer(), "modifyworld.chat")) {
-			event.setCancelled(true);
-		}
-	}
-
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-		// Не сообщать, чтобы избежать спама
-		if (_permissionDenied(event.getPlayer(), "modifyworld.items.pickup", event.getItem().getItemStack())) {
-			event.setCancelled(true);
-		}
-
-		this.checkPlayerInventory(event.getPlayer());
-	}
-
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerDropItem(PlayerDropItemEvent event) {
-		if (permissionDenied(event.getPlayer(), "modifyworld.items.drop", event.getItemDrop().getItemStack())) {
-			event.setCancelled(true);
-		}
-
-		this.checkPlayerInventory(event.getPlayer());
-	}
-
+	// иметь <itemid>в своих руках
 	@EventHandler(priority = EventPriority.LOW)
 	public void onItemHeldChange(PlayerItemHeldEvent event) {
 		Player player = event.getPlayer();
@@ -177,37 +81,7 @@ public class PlayerListener extends ModifyworldListener {
 		this.checkPlayerInventory(player);
 	}
 
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerInventoryClick(InventoryClickEvent event) {
-		InventoryHolder holder = event.getInventory().getHolder();
-
-		if (holder instanceof Player || // не отслеживать вещи из инвентаря стафа
-				event.getRawSlot() >= event.getView().getTopInventory().getSize() || // только топ инвентарь
-				event.getSlotType() == InventoryType.SlotType.OUTSIDE ||  // не отслеживать дроп
-				event.getSlot() == -999) { // временное исправление ошибки Bukkit (BUKKIT-2768)
-			return;
-		}
-
-		ItemStack take = event.getCurrentItem();
-
-		String action;
-		ItemStack item;
-
-		if (take == null) {
-			action = "put";
-			item = event.getCursor();
-		} else {
-			action = "take";
-			item = take;
-		}
-
-		Player player = (Player) event.getWhoClicked();
-
-		if (permissionDenied(player, "modifyworld.items", action, item, "of", event.getInventory().getType())) {
-			event.setCancelled(true);
-		}
-	}
-
+	// Что-то там с перемещением из инвентаря в руку
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerInventoryEvent(InventoryClickEvent event) {
 		ItemStack item = event.getCursor();
@@ -225,6 +99,7 @@ public class PlayerListener extends ModifyworldListener {
 		}
 	}
 
+	// использование предмета ПКМ на сущности (почему "on.entity"???)
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		if (this.checkItemUse) {
@@ -235,16 +110,18 @@ public class PlayerListener extends ModifyworldListener {
 			return;
 		}
 
+		// Проверка на использование
 		if (!event.isCancelled() && permissionDenied(event.getPlayer(), "modifyworld.interact", event.getRightClicked())) {
 			event.setCancelled(true);
 		}
 	}
 
+	// использование
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Action action = event.getAction();
 
-		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) { // проверка ограничения товара
+		if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) { // Если ПКМ по воздуху или по блоку, то проверяем инвентарь (хз зачем)
 			this.checkPlayerInventory(event.getPlayer());
 		}
 
@@ -279,19 +156,31 @@ public class PlayerListener extends ModifyworldListener {
 			return;
 		}
 
-		if (this.checkItemUse && action != Action.PHYSICAL) {
-			if (permissionDenied(event.getPlayer(), "modifyworld.items.use", player.getItemInHand(), "on.block", event.getClickedBlock())) {
+		// Изменяю PHYSICAL на LEFT_CLICK_BLOCK и изменяю правило (use => left)
+		if (this.checkItemUse && action != Action.LEFT_CLICK_BLOCK) {
+			if (permissionDenied(event.getPlayer(), "modifyworld.items.left", player.getItemInHand(), "on.block", event.getClickedBlock())) {
+				event.setCancelled(true);
+			}
+
+			return;
+		}
+		
+		// Добавляю то же действие на RIGHT_CLICK_BLOCK и изменяю правило (use => right)
+		if (this.checkItemUse && action != Action.RIGHT_CLICK_BLOCK) {
+			if (permissionDenied(event.getPlayer(), "modifyworld.items.right", player.getItemInHand(), "on.block", event.getClickedBlock())) {
 				event.setCancelled(true);
 			}
 
 			return;
 		}
 
+		// Проверяю на использование
 		if (!event.isCancelled() && permissionDenied(player, "modifyworld.blocks.interact", event.getClickedBlock())) {
 			event.setCancelled(true);
 		}
 	}
 
+	// зачаровать <itemid>.
 	@EventHandler(priority = EventPriority.LOW)
 	public void onItemEnchant(EnchantItemEvent event) {
 		if (permissionDenied(event.getEnchanter(), "modifyworld.items.enchant", event.getItem())) {
@@ -299,6 +188,7 @@ public class PlayerListener extends ModifyworldListener {
 		}
 	}
 
+	// Крафт
 	@EventHandler(priority = EventPriority.LOW)
 	public void onItemCraft(CraftItemEvent event) {
 		Player player = (Player) event.getWhoClicked();
@@ -308,19 +198,7 @@ public class PlayerListener extends ModifyworldListener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOW)
-	public void onFoodLevelChange(FoodLevelChangeEvent event) {
-		Player player = event.getEntity() instanceof Player ? (Player) event.getEntity() : null;
-
-		if (player == null) {
-			return;
-		}
-
-		if (_permissionDenied(player, "modifyworld.digestion")) {
-			event.setCancelled(true);
-		}
-	}
-
+	// Проверка разрешений иметь в инвентаре
 	protected void checkPlayerInventory(Player player) {
 		if (!checkInventory) {
 			return;
