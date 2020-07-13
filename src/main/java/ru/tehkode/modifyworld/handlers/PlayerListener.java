@@ -157,7 +157,7 @@ public class PlayerListener extends ModifyworldListener {
 		}
 
 		// Изменяю PHYSICAL на LEFT_CLICK_BLOCK и изменяю правило (use => left)
-		if (this.checkItemUse && action != Action.LEFT_CLICK_BLOCK) {
+		if (this.checkItemUse && action == Action.LEFT_CLICK_BLOCK) {
 			if (permissionDenied(event.getPlayer(), "modifyworld.items.left", player.getItemInHand(), "on.block", event.getClickedBlock())) {
 				event.setCancelled(true);
 			}
@@ -166,7 +166,7 @@ public class PlayerListener extends ModifyworldListener {
 		}
 		
 		// Добавляю то же действие на RIGHT_CLICK_BLOCK и изменяю правило (use => right)
-		if (this.checkItemUse && action != Action.RIGHT_CLICK_BLOCK) {
+		if (this.checkItemUse && action == Action.RIGHT_CLICK_BLOCK) {
 			if (permissionDenied(event.getPlayer(), "modifyworld.items.right", player.getItemInHand(), "on.block", event.getClickedBlock())) {
 				event.setCancelled(true);
 			}
